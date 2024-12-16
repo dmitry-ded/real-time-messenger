@@ -1,0 +1,163 @@
+.chat-list {
+  flex: 1;
+  overflow: scroll;
+  scrollbar-width: none;
+  background-color: rgba(0, 0, 0, 0.188);
+	border-radius: 0 0 0 15px;
+
+  .search {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1.5rem;
+  }
+
+  .search-bar {
+    flex: 1;
+    background-color: rgba(44, 80, 36, 0.500);
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    border-radius: 10px;
+    padding: .7rem;
+
+    input {
+      color: rgb(255, 255, 255);
+      flex: 1;
+    }
+
+    img {
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  .add {
+    width: 35px;
+    height: 35px;
+    background-color: rgba(44, 80, 36, 0.500);
+    padding: .7rem;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+
+  .item {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1.5rem;
+    cursor: pointer;
+    border-bottom: 1px solid gray;
+
+    img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .texts {
+      display: flex;
+      flex-direction: column;
+      gap: .7rem;
+      width: 200px;
+
+      span {
+        font-weight: 500;
+      }
+      .lastMess {
+        font-size: 14px;
+        font-weight: 300;
+        white-space: nowrap; /* Запрещает перенос текста */
+        overflow: hidden;    /* Обрезает текст, выходящий за пределы контейнера */
+        text-overflow: ellipsis;
+      }
+
+    }
+  }
+}
+
+/* @media (max-width: 450px) {
+  .chat-list {
+    display: none;
+  }
+} */
+
+@media (max-width: 770px) {
+  .chat-list {
+    flex: 1;
+    overflow: scroll;
+    scrollbar-width: none;
+  
+    .search {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      padding: .5rem;
+    }
+  
+    .search-bar {
+      flex: 1;
+      background-color: rgba(44, 80, 36, 0.500);
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      border-radius: 10px;
+      padding: .7rem;
+  
+      input {
+        color: rgb(255, 255, 255);
+        flex: 1;
+      }
+  
+      img {
+        width: 20px;
+        height: 20px;
+      }
+    }
+  
+    .add {
+      width: 35px;
+      height: 35px;
+      background-color: rgba(44, 80, 36, 0.500);
+      padding: .7rem;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+  
+    .item {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      padding: 1.5rem;
+      cursor: pointer;
+      border-bottom: 1px solid gray;
+  
+      img {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+  
+      .texts {
+        display: flex;
+        flex-direction: column;
+        gap: .7rem;
+        width: 200px;
+  
+        span {
+          font-weight: 500;
+        }
+        .lastMess {
+          font-size: 14px;
+          font-weight: 300;
+          white-space: nowrap; /* Запрещает перенос текста */
+          overflow: hidden;    /* Обрезает текст, выходящий за пределы контейнера */
+          text-overflow: ellipsis;
+        }
+  
+      }
+    }
+  }
+}

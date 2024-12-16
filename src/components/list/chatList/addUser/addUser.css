@@ -1,0 +1,141 @@
+.add-user {
+  width: max-content;
+  height: max-content;
+  padding: 1.5rem;
+  background-color: rgba(31, 31, 31, 0.799);
+  border-radius: 10px;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  margin: auto;
+
+  form { 
+    display: flex;
+    gap: 1.5rem;
+
+    input {
+      padding: 1.5rem;
+      border-radius: 10px;
+      background-color: rgb(31, 31, 31);
+      border: none;
+      outline: none;
+    }
+
+    button { 
+      padding: 1.5rem;
+      border-radius: 10px;
+      border: none;
+      background-color: rgb(63, 63, 255);
+      color: white;
+      cursor: pointer;
+    }
+  }
+
+  .user {
+    margin-top: 3.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .detail-add-user {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      
+      img {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+    }
+
+    button { 
+      width: 50px;
+      padding: .7rem;
+      border-radius: 10px;
+      border: none;
+      background-color: rgb(63, 63, 255);
+      color: white;
+      cursor: pointer;
+    }
+
+  }
+}
+
+@media (max-width: 450px) {
+  .add-user {
+    width: 300px;
+    height: max-content;
+    padding: 2rem;
+    background-color: rgba(31, 31, 31, 0.799);
+    border-radius: 10px;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    margin: auto;
+
+    form { 
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+  
+      input {
+        width: 150px;
+        height: 50px;
+        padding: .5rem 0 .5rem .5rem;
+        border-radius: 10px;
+        background-color: rgb(31, 31, 31);
+
+      }
+  
+      button { 
+        width: 65px;
+        height: 40px;
+        padding: .5rem;
+        border-radius: 10px;
+        border: none;
+        background-color: rgb(63, 63, 255);
+        color: white;
+        cursor: pointer;
+      }
+    }
+  
+    .user {
+      margin-top: 3.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+  
+      .detail {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        
+        img {
+          width: 50px;
+          height: 50px;
+          border-radius: 50%;
+          object-fit: cover;
+        }
+      }
+  
+      button { 
+        width: 50px;
+        padding: .7rem;
+        border-radius: 10px;
+        border: none;
+        background-color: rgb(63, 63, 255);
+        color: white;
+        cursor: pointer;
+        content: "add";
+      }
+  
+    }
+
+  }
+}
