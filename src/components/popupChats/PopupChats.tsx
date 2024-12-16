@@ -72,9 +72,6 @@ const PopupChats = () => {
       }
     }, [currentUser?.id]);
 
-    console.log(currentUser);
-    
-
   const handleSelect = async (chat: any) => {
       
       const userChats = chats.map(item => {
