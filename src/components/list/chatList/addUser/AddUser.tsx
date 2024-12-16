@@ -76,9 +76,6 @@ const AddUser = () => {
         })
       })
 
-      console.log(newChatRef.id);
-      
-
     }catch(err) {
       console.log(err);
       

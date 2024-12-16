@@ -16,8 +16,6 @@ const List = () => {
     };
 
     handleResize();
-
-    console.log(isMobile);
     
     window.addEventListener('resize', handleResize);
 

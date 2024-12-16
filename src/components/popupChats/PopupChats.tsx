@@ -14,6 +14,12 @@ import { Chat } from '../list/chatList/ChatList';
 import AddUser from '../list/chatList/addUser/AddUser'
 import more2 from "../../assets/img/more2.png"
 
+interface User {
+  id: string;
+  email: string,
+  username: string,
+  blocked: [],
+}
 
 const PopupChats = () => {
 
@@ -66,6 +72,8 @@ const PopupChats = () => {
       }
     }, [currentUser?.id]);
 
+    console.log(currentUser);
+    
 
   const handleSelect = async (chat: any) => {
       
@@ -77,7 +85,7 @@ const PopupChats = () => {
       const chatIndex = userChats.findIndex(item => item.chatId === chat.chatId)
   
       userChats[chatIndex].isSeen = true;
-      const userChatsRef = doc(db, "userchats", currentUser?.id);
+      const userChatsRef = doc(db, "userchats", currentUser!.id); // убрать оператор ! и типизировать по-другому 
   
       
       try {

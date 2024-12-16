@@ -90,7 +90,7 @@ const ChatList = () => {
     const chatIndex = userChats.findIndex(item => item.chatId === chat.chatId)
 
     userChats[chatIndex].isSeen = true;
-    const userChatsRef = doc(db, "userchats", currentUser?.id);
+    const userChatsRef = doc(db, "userchats", currentUser!.id); // убрать оператор ! и типизировать по-другому 
 
     
     try {

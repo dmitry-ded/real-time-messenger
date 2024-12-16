@@ -18,8 +18,6 @@ function App() {
   const dispatch = useAppDispatch();
   const { currentUser, isLoading } = useSelector(selectUserSlice);
   const { chatId } = useSelector(selectChatSlice);
-
-  console.log(chatId);
   
 
   useEffect(() => {

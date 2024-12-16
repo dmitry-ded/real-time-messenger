@@ -19,9 +19,14 @@ import { ru } from "date-fns/locale";
 import PopupChats from '../popupChats/PopupChats'
 import PopupDetail from '../popupDetail/PopupDetail'
 
+interface Chat {
+  createdAt: [],
+  messages: [],
+}
+
 const Chat = () => {
 
-  const [chat, setChat] = useState();
+  const [chat, setChat] = useState<Chat>();
   const [open, setOpen] = useState(false);
   const [text, setText] = useState("");
   const [img, setImg] = useState({
@@ -38,6 +43,8 @@ const Chat = () => {
     endRef.current?.scrollIntoView({behavior: "smooth"})
 
   }, [chat?.messages])
+
+  console.log(chat);
 
   useEffect(() => {
     const unSub = onSnapshot(doc(db, "chats", chatId), async (res: any) => {   
@@ -75,9 +82,9 @@ const Chat = () => {
     try {
       setText("");
 
-      if (img.file) {
-        imgUrl = await upload(img.file);
-      }
+      // if (img.file) {
+      //   imgUrl = await upload(img.file);
+      // }
 
       await updateDoc(doc(db, "chats", chatId), {
         messages: arrayUnion({
@@ -91,6 +98,10 @@ const Chat = () => {
       const userIDs = [currentUser?.id, user.id]
 
       userIDs.forEach(async (id) => {
+
+        if (!id) {
+          throw new Error("ID is undefined");
+        }
         const userChatsRef = doc(db, "userchats", id)
         const userChatsSnapshot = await getDoc(userChatsRef);
 
@@ -130,7 +141,8 @@ const Chat = () => {
           <div className="texts">
             <span>{user.username}</span>
             <p>
-              Был в сети {chat?.length ? format(chat?.messages[0].createdAt.toDate(), "HH:mm", { locale: ru }) : "22:22"}
+              {/* Был в сети {chat?.length ? format(chat?.messages[0].createdAt.toDate(), "HH:mm", { locale: ru }) : "22:22"} */}
+              Был в сети 22:22
             </p>
           </div>
         </div>
@@ -144,7 +156,7 @@ const Chat = () => {
       </div>
       <div className="center">
         {
-          chat?.messages.map((mes) => (
+          chat?.messages.map((mes: any) => (
             <div className={mes.senderId.id === currentUser?.id ? "message own" : "message"} key={mes.createAt} >
               <div className="text">
                 {mes.img && <img src={mes.img} alt="" />}

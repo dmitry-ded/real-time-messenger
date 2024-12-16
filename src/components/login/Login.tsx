@@ -41,7 +41,6 @@ const Login = () => {
       const res = await createUserWithEmailAndPassword(auth, email, password);   
       
       // const imgUrl = await upload(ava.file)
-      console.log(res);
       
 
       await setDoc(doc(db, "users", res.user.uid), {
