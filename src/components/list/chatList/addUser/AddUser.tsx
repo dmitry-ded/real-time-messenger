@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import "./addUser.css"
 import avatar from "../../../../assets/img/avatar.jpg"
 import { db } from '../../../../lib/firebase'

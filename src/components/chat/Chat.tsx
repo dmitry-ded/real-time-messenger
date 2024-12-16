@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import "./chat.css"
 import avatar from "../../assets/img/avatar.jpg"
 import video from "../../assets/img/video.png"
@@ -13,7 +13,6 @@ import { db } from '../../lib/firebase'
 import { useSelector } from 'react-redux'
 import { selectChatSlice } from '../../redux/slices/chatSlice'
 import { selectUserSlice } from '../../redux/slices/userSlice'
-import { useAppDispatch } from '../../redux/store'
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import PopupChats from '../popupChats/PopupChats'

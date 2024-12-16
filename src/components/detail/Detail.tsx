@@ -1,4 +1,3 @@
-import React from 'react'
 import "./detail.css"
 import avatar from "../../assets/img/avatar.jpg"
 import arrowUp from "../../assets/img/arrowUp.png"
