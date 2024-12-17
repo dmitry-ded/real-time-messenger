@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/static/css/main.a269d688.css",
-    "main.js": "/static/js/main.bf25ef08.js",
-    "static/media/bc2.jpg": "/static/media/bc2.3b77d569feacc4b63bdd.jpg",
-    "static/media/avatar.jpg": "/static/media/avatar.f00a59e7437746ee3074.jpg",
-    "index.html": "/index.html",
-    "main.a269d688.css.map": "/static/css/main.a269d688.css.map",
-    "main.bf25ef08.js.map": "/static/js/main.bf25ef08.js.map"
+    "main.css": "/real-time-messenger/static/css/main.ea037748.css",
+    "main.js": "/real-time-messenger/static/js/main.0c974d73.js",
+    "static/media/bc2.jpg": "/real-time-messenger/static/media/bc2.3b77d569feacc4b63bdd.jpg",
+    "static/media/avatar.jpg": "/real-time-messenger/static/media/avatar.f00a59e7437746ee3074.jpg",
+    "index.html": "/real-time-messenger/index.html",
+    "main.ea037748.css.map": "/real-time-messenger/static/css/main.ea037748.css.map",
+    "main.0c974d73.js.map": "/real-time-messenger/static/js/main.0c974d73.js.map"
   },
   "entrypoints": [
-    "static/css/main.a269d688.css",
-    "static/js/main.bf25ef08.js"
+    "static/css/main.ea037748.css",
+    "static/js/main.0c974d73.js"
   ]
 }
