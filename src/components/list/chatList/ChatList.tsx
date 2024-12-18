@@ -9,37 +9,33 @@ import { useSelector } from "react-redux"
 import { selectUserSlice } from "../../../redux/slices/userSlice"
 import { doc, getDoc, onSnapshot, updateDoc } from "firebase/firestore"
 import { db } from "../../../lib/firebase"
-import { chageChat } from "../../../redux/slices/chatSlice"
+import { chageChat, UserState } from "../../../redux/slices/chatSlice"
 import { useAppDispatch } from "../../../redux/store"
 
-interface User {
-  id: string;
-  name: string;
-  username: string;
-}
-
-export interface Chat {
-  chatId: string;
-  receiverId: string;
-  updateAt: number;
-  lastMessage: string;
+export interface ChatUserList {
+  chatId: string,
   isSeen: boolean,
-  user: User;
+  lastMessage: string,
+  receiverId: string,
+  updateAt: number,
+  user: UserState,
 }
 
-// interface SenderIdType {
-//   createdAt: {},
-//   senderId: {}
-// }
+export interface ChatList {
+  chatId: string,
+  isSeen: boolean,
+  lastMessage: string,
+  receiverId: string,
+  updateAt: number,
+}
 
-// interface Messages {
-//   createdAt: {},
-//   messages: SenderIdType
-// }
+export interface DocumentData {
+  chats: ChatList[]; 
+}
 
 const ChatList = () => {
 
-  const [chats, setChats] = useState<Chat[]>([]);
+  const [chats, setChats] = useState<ChatUserList[]>([]);
   const [addMode, setAddMode] = useState(false);
   const [inputText, setInputText] = useState("");
 
@@ -55,24 +51,27 @@ const ChatList = () => {
       return
     }
 
-    const unSub = onSnapshot(doc(db, "userchats", currentUser?.id), async (res: any) => {
+    const unSub = onSnapshot(doc(db, "userchats", currentUser?.id), async (res) => {
       
-      const data = res.data().chats;
-    
-      if (data){
-        const promises = data.map(async(i: any) => {
+      const chat = res.data() as DocumentData; 
+      const data = chat.chats;
+      
+      if (data) {
+        const promises = data.map(async(i: ChatList) => {
+        
           const userDocRef = doc(db, "users", i.receiverId);
           const userDocSnap = await getDoc(userDocRef);
   
-          const user = userDocSnap.data();
-  
+          const user = userDocSnap.data() as UserState;
+    
           return {...i, user};
         })
-        
-        const chatData: any = await Promise.all(promises)
-        setChats(chatData.sort((a: any, b:any) => b.updatedAt - a.apdatedAt));
-
+          
+          const chatData = await Promise.all(promises);
+          
+          setChats(chatData.sort((a, b) => b.updateAt - a.updateAt));
       }
+      
     });
 
     return () => {
@@ -80,7 +79,7 @@ const ChatList = () => {
     }
   }, [currentUser?.id]);
 
-  const handleSelect = async (chat: any) => {
+  const handleSelect = async (chat: ChatUserList) => {
     
     const userChats = chats.map(item => {
       const { user, ...rest } = item;
@@ -126,12 +125,13 @@ const ChatList = () => {
   const filteredChats = chats.filter((c) => c.user.username.toLowerCase().includes(inputText.toLowerCase()))
 
   useEffect(() => {
-    const handleClickOutside = (event: any) => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement
       
       if (
         containerRef.current && 
-        !containerRef.current.contains(event.target) && 
-        !event.target.classList.contains("add")
+        !containerRef.current.contains(target) && 
+        !target.classList.contains("add")
       ) {
         setAddMode(false);
         
@@ -155,6 +155,7 @@ const ChatList = () => {
       </div>
       {
         filteredChats.map((el) => (
+
           <div className="item" key={el.chatId} onClick={() => handleSelect(el)} style={{backgroundColor: el.isSeen ? "transparent" : "rgba(227, 255, 255, 0.42)"}}>
             <img src={avatar} alt="" />
             <div className="texts">

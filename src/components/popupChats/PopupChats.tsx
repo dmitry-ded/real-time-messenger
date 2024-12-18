@@ -6,11 +6,11 @@ import search from "../../assets/img/search.png"
 import minus from "../../assets/img/minus.png"
 import { doc, getDoc, onSnapshot, updateDoc } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
-import { chageChat } from '../../redux/slices/chatSlice';
+import { chageChat, UserState } from '../../redux/slices/chatSlice';
 import { useAppDispatch } from '../../redux/store';
 import { useSelector } from 'react-redux';
 import { selectUserSlice } from '../../redux/slices/userSlice';
-import { Chat } from '../list/chatList/ChatList';
+import { ChatList, ChatUserList, DocumentData } from '../list/chatList/ChatList';
 import AddUser from '../list/chatList/addUser/AddUser'
 import more2 from "../../assets/img/more2.png"
 
@@ -25,7 +25,7 @@ const PopupChats = () => {
 
   const sortRef = useRef<HTMLDivElement>(null);
 
-  const [chats, setChats] = useState<Chat[]>([]);
+  const [chats, setChats] = useState<ChatUserList[]>([]);
   const [addMode, setAddMode] = useState(false);
   const [inputText, setInputText] = useState("");
 
@@ -37,7 +37,6 @@ const PopupChats = () => {
 
   const dispatch = useAppDispatch();
   
-
   const [isVisible, setIsVisible] = useState(false);
 
 
@@ -47,22 +46,23 @@ const PopupChats = () => {
         return
       }
   
-      const unSub = onSnapshot(doc(db, "userchats", currentUser?.id), async (res: any) => {
+      const unSub = onSnapshot(doc(db, "userchats", currentUser?.id), async (res) => {
         
-        const data = res.data().chats;
+        const chat = res.data() as DocumentData;
+        const data = chat.chats;
       
         if (data){
-          const promises = data.map(async(i: any) => {
+          const promises = data.map(async(i: ChatList) => {
             const userDocRef = doc(db, "users", i.receiverId);
             const userDocSnap = await getDoc(userDocRef);
     
-            const user = userDocSnap.data();
+            const user = userDocSnap.data() as UserState;
     
             return {...i, user};
           })
           
-          const chatData: any = await Promise.all(promises)
-          setChats(chatData.sort((a: any, b:any) => b.updatedAt - a.apdatedAt));
+          const chatData= await Promise.all(promises)
+          setChats(chatData.sort((a, b) => b.updateAt - a.updateAt));
   
         }
       });
@@ -72,8 +72,8 @@ const PopupChats = () => {
       }
     }, [currentUser?.id]);
 
-  const handleSelect = async (chat: any) => {
-      
+  const handleSelect = async (chat: ChatUserList) => {
+    
       const userChats = chats.map(item => {
         const { user, ...rest } = item;
         return rest;
@@ -84,7 +84,6 @@ const PopupChats = () => {
       userChats[chatIndex].isSeen = true;
       const userChatsRef = doc(db, "userchats", currentUser!.id); // убрать оператор ! и типизировать по-другому 
   
-      
       try {
         await updateDoc(userChatsRef, {
           chats: userChats,
@@ -100,21 +99,22 @@ const PopupChats = () => {
   }
 
   useEffect(() => {
-    const handleClickOutside = (event: any) => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement
       
       if (
         containerRef.current && 
-        !containerRef.current.contains(event.target) && 
+        !containerRef.current.contains(target) && 
         addModeRef.current && 
-        !addModeRef.current.contains(event.target as Node) && 
-        !event.target.classList.contains("add")
+        !addModeRef.current.contains(target) && 
+        !target.classList.contains("add")
         ) {
           setIsVisible(false);
           
         if (
           containerRef.current && 
-          !containerRef.current.contains(event.target) && 
-          !event.target.classList.contains("add2")
+          !containerRef.current.contains(target) && 
+          !target.classList.contains("add2")
           ) {
             setAddMode(false);
 
@@ -123,8 +123,8 @@ const PopupChats = () => {
 
       if (
         addModeRef.current && 
-        !addModeRef.current.contains(event.target) && 
-        !event.target.classList.contains("add2")
+        !addModeRef.current.contains(target) && 
+        !target.classList.contains("add2")
         ) {
         setAddMode(false);
       }
@@ -136,6 +136,12 @@ const PopupChats = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  useEffect(() => {
+    if (!isVisible) {
+      setInputText(''); 
+    }
+  }, [isVisible]);
   
   const filteredChats = chats.filter((c) => c.user.username.toLowerCase().includes(inputText.toLowerCase()))
   
@@ -157,7 +163,7 @@ const PopupChats = () => {
             <div className="chats-popup-add">
               {
                 filteredChats.map((el) => (
-                  <div className="item"  onClick={() => handleSelect(el)} style={{backgroundColor: el.isSeen ? "transparent" : "rgba(227, 255, 255, 0.42)"}} >
+                  <div className="item"  onClick={() => handleSelect(el)} style={{backgroundColor: el.isSeen ? "transparent" : "rgba(227, 255, 255, 0.42)"}} key={el.chatId} >
                     <img src={avatar} alt="" />
                     <div className="texts">
                       <span>{el.user.username}</span>

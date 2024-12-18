@@ -8,24 +8,42 @@ import mic from "../../assets/img/mic.png"
 import camera from "../../assets/img/camera.png"
 import image from "../../assets/img/img.png"
 import EmojiPicker from 'emoji-picker-react'
+import { EmojiClickData} from 'emoji-picker-react'
 import { arrayUnion, doc, getDoc, onSnapshot, updateDoc } from 'firebase/firestore'
 import { db } from '../../lib/firebase'
 import { useSelector } from 'react-redux'
-import { selectChatSlice } from '../../redux/slices/chatSlice'
+import { selectChatSlice, UserState } from '../../redux/slices/chatSlice'
 import { selectUserSlice } from '../../redux/slices/userSlice'
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import PopupChats from '../popupChats/PopupChats'
 import PopupDetail from '../popupDetail/PopupDetail'
+import { DocumentData } from '../list/chatList/ChatList'
 
+interface CreatedAtObj {
+  nanoseconds: number
+  seconds: number
+}
+interface MessagesList {
+  createdAt: CreatedAtObj,
+  img: null,
+  senderId: UserState,
+  text: string,
+}
 interface Chat {
-  createdAt: [],
-  messages: [],
+  createdAt: {},
+  messages: MessagesList[],
 }
 
 const Chat = () => {
 
-  const [chat, setChat] = useState<Chat>();
+  const [chat, setChat] = useState<Chat>({
+    createdAt: {
+      nanoseconds: 0,
+      seconds: 0,
+    },
+    messages: []
+  });
   const [open, setOpen] = useState(false);
   const [text, setText] = useState("");
   const [img, setImg] = useState({
@@ -45,8 +63,10 @@ const Chat = () => {
 
 
   useEffect(() => {
-    const unSub = onSnapshot(doc(db, "chats", chatId), async (res: any) => {   
-      const data = res.data();
+    const unSub = onSnapshot(doc(db, "chats", chatId), async (res) => {   
+      
+      const tmp = res.data() as Chat
+      const data = tmp;
       setChat(data);
       
     });
@@ -57,19 +77,20 @@ const Chat = () => {
   }, [chatId])
   
 
-  const handleEmoji = (e: any) => {
+  const handleEmoji = (e: EmojiClickData) => {
+    
     setText((prev => prev + e.emoji))
     setOpen(false)
   }
 
-  const handleImg = (e: any) => {
-    if (e.target.files[0]) {
-      setImg({
-        file: e.target.files[0],
-        url: URL.createObjectURL(e.target.files[0]),
-      })
-    }
-  }
+  // const handleImg = (e: any) => {
+  //   if (e.target.files[0]) {
+  //     setImg({
+  //       file: e.target.files[0],
+  //       url: URL.createObjectURL(e.target.files[0]),
+  //     })
+  //   }
+  // }
 
   const handleSend = async () => {
     if(text === "") return;
@@ -104,9 +125,14 @@ const Chat = () => {
         const userChatsSnapshot = await getDoc(userChatsRef);
 
         if(userChatsSnapshot.exists()) {
-          const userChatsData = userChatsSnapshot.data();
+          const data = userChatsSnapshot.data();
 
-          const chatIndex = userChatsData.chats.findIndex((c: any) => c.chatId === chatId)
+          if (!data) {
+            throw new Error("No data in snapshot");
+          }
+          const userChatsData = data as DocumentData;
+          
+          const chatIndex = userChatsData.chats.findIndex((c) => c.chatId === chatId)
 
           userChatsData.chats[chatIndex].lastMessage = text;
           userChatsData.chats[chatIndex].isSeen = id === currentUser?.id ? true : false;
@@ -127,7 +153,7 @@ const Chat = () => {
       url: "",
     })
   }  
-
+  
   return (
     <div className='chat'>
       <div className="top">
@@ -154,12 +180,12 @@ const Chat = () => {
       </div>
       <div className="center">
         {
-          chat?.messages.map((mes: any) => (
-            <div className={mes.senderId.id === currentUser?.id ? "message own" : "message"} key={mes.createAt} >
+          chat?.messages.map((mes) => (
+            <div className={mes.senderId.id === currentUser?.id ? "message own" : "message"} key={`${mes.createdAt.seconds}-${mes.createdAt.nanoseconds}`} >
               <div className="text">
                 {mes.img && <img src={mes.img} alt="" />}
                 <p>{mes.text}</p>
-                <span>{format(mes.createdAt.toDate(), "HH:mm", { locale: ru })}</span>
+                <span>{format(new Date(mes.createdAt.seconds * 1000 + mes.createdAt.nanoseconds / 1e6), "HH:mm", { locale: ru })}</span>
               </div>
             </div>
           ))
@@ -186,7 +212,7 @@ const Chat = () => {
           <label htmlFor="file">
             <img src={image} alt="" />
           </label>
-          <input type="file" id='file' style={{display: "none"}} onChange={handleImg}/>
+          {/* <input type="file" id='file' style={{display: "none"}} onChange={handleImg}/> */}
           <img src={camera} alt="" />
           <img src={mic} alt="" />
         </div>

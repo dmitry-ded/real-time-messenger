@@ -5,15 +5,19 @@ import arrowDown from "../../assets/img/arrowDown.png"
 import download from "../../assets/img/download.png"
 import { auth, db } from '../../lib/firebase'
 import { useSelector } from 'react-redux'
-import { changeBlock, selectChatSlice } from '../../redux/slices/chatSlice'
+import { changeBlock, resetChatId, selectChatSlice } from '../../redux/slices/chatSlice'
 import { selectUserSlice } from '../../redux/slices/userSlice'
 import { arrayRemove, arrayUnion, doc, updateDoc } from 'firebase/firestore'
+import { useAppDispatch } from "../../redux/store"
 
 
 const Detail = () => {
 
   const { user, isCurrentUserBlocked, isReceiverBlocked } = useSelector(selectChatSlice);
-  const { currentUser } = useSelector(selectUserSlice);
+  // const { currentUser } = useSelector(selectUserSlice);
+  // const { chatId } = useSelector(selectChatSlice);
+  const dispatch = useAppDispatch()
+
 
   const handleBlock = async () => {
     alert("В разработке")
@@ -33,6 +37,11 @@ const Detail = () => {
     //   console.log(error);
       
     // }
+  }
+
+  const handleSignOut = () => {
+    auth.signOut()
+    dispatch(resetChatId());
   }
 
   return (
@@ -146,7 +155,7 @@ const Detail = () => {
           <button className='block' onClick={handleBlock}>
             {isCurrentUserBlocked ? "Вы заблокированы" : isReceiverBlocked ? "Пользователь заблокирован" : "Заблокировать пользователя"}
           </button>
-          <button className='logout' onClick={() => auth.signOut()}>Выйти из системы</button>
+          <button className='logout' onClick={handleSignOut}>Выйти из системы</button>
         </div>
       </div>
     </div>

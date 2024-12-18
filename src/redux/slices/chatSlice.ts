@@ -72,11 +72,14 @@ const chatSlice = createSlice({
       state.isCurrentUserBlocked = false;
       state.isReceiverBlocked = false;
     },
+    resetChatId: (state) => {
+      state.chatId = "";
+    }
   }
 })
 
 
-export const { chageChat, changeBlock, resetChat } = chatSlice.actions;
+export const { chageChat, changeBlock, resetChat, resetChatId } = chatSlice.actions;
 
 export const selectChatSlice = (state: RootState) => state.chatSlice;
 

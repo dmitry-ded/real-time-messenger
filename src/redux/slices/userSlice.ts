@@ -2,11 +2,13 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import { RootState } from "../store";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../lib/firebase";
+import { UserState } from "./chatSlice";
 
 
 export const fetchUserInfo = createAsyncThunk(
   'user/fetchUserInfo',
   async (uid: string, { rejectWithValue }) => {
+    
     if (!uid) return rejectWithValue('No UID provided');
 
     try {
@@ -15,27 +17,27 @@ export const fetchUserInfo = createAsyncThunk(
       
       if (docSnap.exists()) {
 
-        const userData = docSnap.data() as User;
+        const userData = docSnap.data() as UserState;
         return userData;
       } else {
         return rejectWithValue('User not found');
       }
-    } catch (err: any) {
-      console.error(err);
-      return rejectWithValue(err.message);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        console.error(err);
+        return rejectWithValue(err.message);
+
+      } else {
+
+        console.error('unknown error', err);
+        return rejectWithValue('unknown error');
+      }
     }
   }
 );
 
-interface User {
-  id: string;
-  username: string;
-  email: string;
-  blocked: string[];
-}
-
 interface UserSliceState {
-  currentUser: User | null,
+  currentUser: UserState | null,
   isLoading: boolean,
   error: string | null | {},
 }

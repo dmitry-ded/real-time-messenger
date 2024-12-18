@@ -13,12 +13,13 @@ const PopupDetail = () => {
   const [addMode, setAddMode] = useState(false);
 
   useEffect(() => {
-    const handleClickOutside = (event: any) => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement
       
       if (
         containerRef.current && 
-        !containerRef.current.contains(event.target) && 
-        !event.target.classList.contains("add")
+        !containerRef.current.contains(target) && 
+        !target.classList.contains("add")
       ) {
         
         setAddMode(false);

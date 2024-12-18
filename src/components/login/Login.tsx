@@ -16,24 +16,28 @@ const Login = () => {
 
   const [load, setLoad] = useState(false);
 
-  const handleAvatar = (e: any) => {
-    if (e.target.files[0]) {
-      setAva({
-        file: e.target.files[0],
-        url: URL.createObjectURL(e.target.files[0]),
-      })
-    }
-  }
 
-  const handleRegister = async (e: any) => {
+  // сделать выбор аватара на firebase
+  // const handleAvatar = (e: any) => {
+  //   if (e.target.files[0]) {
+  //     setAva({
+  //       file: e.target.files[0],
+  //       url: URL.createObjectURL(e.target.files[0]),
+  //     })
+  //   }
+  // }
+
+  const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoad(true);
-    const formData = new FormData(e.target);
+    const target = e.target as HTMLFormElement;
+
+    const formData = new FormData(target);
     const { username, email, password } = Object.fromEntries(formData)
 
     if (typeof email !== 'string' || typeof password !== 'string') {
-      toast.error('Неверный формат email или пароля');
-      return
+      return toast.error('Неверный формат email или пароля');
+      
     }
 
     try{ 
@@ -66,21 +70,24 @@ const Login = () => {
     
   }
 
-  const handleLogin  = async (e: any) => {
+  const handleLogin  = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const target = e.target as HTMLFormElement;
+    
     setLoad(true)
-    const formData = new FormData(e.target);
+    const formData = new FormData(target);
     const { email, password } = Object.fromEntries(formData)
-
+    
     if (typeof email !== 'string' || typeof password !== 'string') {
       toast.error('Неверный формат email или пароля');
       return
     }
+    
 
     try {
       const res = await signInWithEmailAndPassword(auth, email, password);
 
-    }catch(e: any) {
+    }catch(e) {
       console.log(e);
       toast.error('Неверный формат email или пароля');
     }finally{ 
@@ -106,7 +113,8 @@ const Login = () => {
             <img src={ava.url || avatar} alt="" />
             Загрузи фотографию
           </label>
-          <input type="file" id='file' style={{display: "none"}} onChange={handleAvatar}/>
+          {/* <input type="file" id='file' style={{display: "none"}} onChange={handleAvatar}/> */} {/* сделать выбор аватара на firebase */}
+          <input type="file" id='file' style={{display: "none"}} />
           <input type="text" name="username" placeholder='Введите имя' />
           <input type="text" name="email" placeholder='Введите почту' />
           <input type="password" name="password" placeholder='Введите пароль' />

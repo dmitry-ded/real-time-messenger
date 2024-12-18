@@ -19,33 +19,43 @@ const AddUser = () => {
 
   const { currentUser } = useSelector(selectUserSlice);
  
-  const handleSearch = async (e: any) => {
-    e.preventDefault();
+  const handleSearch = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();  
 
-    const formData = new FormData(e.target);
-    const username = formData.get("username")
+    const formData = new FormData(e.target as HTMLFormElement);
+    let username = formData.get("username")
+
+    //сделать чтобы можно было искать в любом регистре
+    // if (typeof username === "string") {
+    //   username = username.toLowerCase(); 
+    // }
 
     try {
       
       const userRef = collection(db, "users");
 
       const q = query(userRef, where("username", "==", username));
-
-      const querySnapShot: any = await getDocs(q);
-
-      if(!querySnapShot.empty) {
-        setUser(querySnapShot.docs[0].data());
+      
+      const querySnapShot = await getDocs(q);
+      
+      if (!querySnapShot.empty) {
+        const userData = querySnapShot.docs[0].data() as UserState;
+        
+        if(userData.id !== currentUser?.id) {
+          setUser(userData);
+        }
       }
+      
 
     }catch(err) {
-
+      console.log(err);
+      
     }
 
   }
 
   const handleAdd = async () => {
-
-
+    
     const chatRef = collection(db, "chats")
     const userChatsRef = collection(db, "userchats")
 
@@ -81,6 +91,8 @@ const AddUser = () => {
       
     }
   }
+
+  // const filteredChats = chats.filter((c) => c.user.username.toLowerCase().includes(inputText.toLowerCase()))
   
   return (
     <div className='add-user'>
