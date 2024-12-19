@@ -3,11 +3,11 @@ import avatar from "../../assets/img/avatar.jpg"
 import arrowUp from "../../assets/img/arrowUp.png"
 import arrowDown from "../../assets/img/arrowDown.png"
 import download from "../../assets/img/download.png"
-import { auth, db } from '../../lib/firebase'
+import { auth } from '../../lib/firebase'
 import { useSelector } from 'react-redux'
-import { changeBlock, resetChatId, selectChatSlice } from '../../redux/slices/chatSlice'
-import { selectUserSlice } from '../../redux/slices/userSlice'
-import { arrayRemove, arrayUnion, doc, updateDoc } from 'firebase/firestore'
+import { resetChatId, selectChatSlice } from '../../redux/slices/chatSlice'
+// import { selectUserSlice } from '../../redux/slices/userSlice'
+// import { arrayRemove, arrayUnion, doc, updateDoc } from 'firebase/firestore'
 import { useAppDispatch } from "../../redux/store"
 
 
@@ -42,6 +42,7 @@ const Detail = () => {
   const handleSignOut = () => {
     auth.signOut()
     dispatch(resetChatId());
+    window.location.reload()
   }
 
   return (

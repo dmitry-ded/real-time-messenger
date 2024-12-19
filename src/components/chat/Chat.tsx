@@ -19,6 +19,8 @@ import { ru } from "date-fns/locale";
 import PopupChats from '../popupChats/PopupChats'
 import PopupDetail from '../popupDetail/PopupDetail'
 import { DocumentData } from '../list/chatList/ChatList'
+import { useAppDispatch } from '../../redux/store'
+import { addCurrentChat } from '../../redux/slices/currentChatSlice'
 
 interface CreatedAtObj {
   nanoseconds: number
@@ -50,11 +52,12 @@ const Chat = () => {
     file: null,
     url: "",
   });
-
+  
   const endRef = useRef<HTMLDivElement>(null);
 
   const { chatId, user, isCurrentUserBlocked, isReceiverBlocked } = useSelector(selectChatSlice);
   const { currentUser } = useSelector(selectUserSlice);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     endRef.current?.scrollIntoView({behavior: "smooth"})
@@ -68,7 +71,8 @@ const Chat = () => {
       const tmp = res.data() as Chat
       const data = tmp;
       setChat(data);
-      
+      dispatch(addCurrentChat(data.messages[0].senderId.id))
+
     });
     
     return () => {

@@ -6,6 +6,7 @@ import { arrayUnion, collection, doc, getDocs, query, serverTimestamp, setDoc, u
 import { useSelector } from 'react-redux'
 import { selectUserSlice } from '../../../../redux/slices/userSlice'
 import { UserState } from '../../../../redux/slices/chatSlice'
+import { selectChatListSlice } from '../../../../redux/slices/chatListSlice'
 
 
 const AddUser = () => {
@@ -16,8 +17,12 @@ const AddUser = () => {
     blocked: [],
     username: ""
   });
+  const [notFound, setNotFound] = useState(false);
+  const [isAdded, setIsAdded] = useState(false);
+  const [disabl, setDisabl] = useState(true);
 
   const { currentUser } = useSelector(selectUserSlice);
+  const { idList } = useSelector(selectChatListSlice);
  
   const handleSearch = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();  
@@ -40,18 +45,31 @@ const AddUser = () => {
       
       if (!querySnapShot.empty) {
         const userData = querySnapShot.docs[0].data() as UserState;
-        
+        setNotFound(false);
+
         if(userData.id !== currentUser?.id) {
-          setUser(userData);
+
+          const isIdInList = idList.some((el) => el === userData.id);
+          if (!isIdInList) {
+            setIsAdded(false); 
+            setDisabl(false);
+            setUser(userData);
+          }
+          else {
+            setIsAdded(true);
+            setDisabl(true);
+            
+          }
         }
       }
-      
+      else {
+        setNotFound(true);
+      }
 
     }catch(err) {
       console.log(err);
       
     }
-
   }
 
   const handleAdd = async () => {
@@ -100,15 +118,35 @@ const AddUser = () => {
         <input type="text" placeholder='Имя' name='username' />
         <button>Поиск</button>
       </form>
+      <div className="not-found-block">
+        {
+          notFound &&
+          (
+            <span>Такого пользователя не существует</span>
+          )
+        }
+      </div>
       {
         user && 
-        <div className="user">
-          <div className="detail-add-user">
-            <img src={avatar} alt="" />
-            <span>{user.username}</span>
+        <>
+          <div className="user-popup">
+            <div className="detail-add-user">
+              <img src={avatar} alt="" />
+              <span>{user.username}</span>
+            </div>
+            <div className="add-user-button">
+              <button onClick={handleAdd} disabled={disabl}>+</button>
+            </div>
           </div>
-          <button onClick={handleAdd}>+</button>
-        </div>
+          <div className="is-added-user">
+            {
+              isAdded &&
+              (
+                <span>Этот пользователь у вас уже есть</span>
+              )
+            }
+          </div>
+        </>
       }
       
     </div>

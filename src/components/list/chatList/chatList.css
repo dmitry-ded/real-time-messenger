@@ -49,30 +49,52 @@
     cursor: pointer;
     border-bottom: 1px solid gray;
 
-    img {
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      object-fit: cover;
-    }
-
-    .texts {
+    .user-description{
       display: flex;
-      flex-direction: column;
-      gap: .7rem;
-      width: 200px;
+      align-items: center;
+      width: 337px;
+      gap: 1.5rem;
+      padding: .3rem .3rem .3rem .3rem;
 
-      span {
-        font-weight: 500;
-      }
-      .lastMess {
-        font-size: 14px;
-        font-weight: 300;
-        white-space: nowrap; /* Запрещает перенос текста */
-        overflow: hidden;    /* Обрезает текст, выходящий за пределы контейнера */
-        text-overflow: ellipsis;
+      img {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        object-fit: cover;
       }
 
+      .texts {
+        display: flex;
+        flex-direction: column;
+        gap: .7rem;
+        width: 200px;
+
+        span {
+          font-weight: 500;
+        }
+        .lastMess {
+          font-size: 14px;
+          font-weight: 300;
+          white-space: nowrap; /* Запрещает перенос текста */
+          overflow: hidden;    /* Обрезает текст, выходящий за пределы контейнера */
+          text-overflow: ellipsis;
+        }
+        
+      }
+      .new-message {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #4a86c3;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+
+        span {
+          font-size: 13px;
+          font-weight: 800;
+        }
+      }
     }
   }
 }

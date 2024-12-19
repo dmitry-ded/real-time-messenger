@@ -67,16 +67,16 @@
     }
   }
 
-  
-
   .center {
     padding: 20px;
     flex: 1;
-    overflow: scroll;
+    overflow-y: scroll;
+    overflow-x: hidden;
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
-    scrollbar-width: none;
+    scrollbar-width: thin; 
+    scrollbar-color: #888 transparent;
 
     .message {
       max-width: 70%;
@@ -88,7 +88,13 @@
         align-self: flex-end;
 
         .text {
+          max-width: 300px;
           p {
+            /*Разрывает длинные слова*/
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            white-space: normal;
+
             background-color: rgba(0, 124, 124, 0.902);
             padding: 1rem;
           }

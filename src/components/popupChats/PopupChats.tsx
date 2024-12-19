@@ -10,7 +10,7 @@ import { chageChat, UserState } from '../../redux/slices/chatSlice';
 import { useAppDispatch } from '../../redux/store';
 import { useSelector } from 'react-redux';
 import { selectUserSlice } from '../../redux/slices/userSlice';
-import { ChatList, ChatUserList, DocumentData } from '../list/chatList/ChatList';
+import { ChatListType, ChatUserList, DocumentData } from '../list/chatList/ChatList';
 import AddUser from '../list/chatList/addUser/AddUser'
 import more2 from "../../assets/img/more2.png"
 
@@ -52,7 +52,7 @@ const PopupChats = () => {
         const data = chat.chats;
       
         if (data){
-          const promises = data.map(async(i: ChatList) => {
+          const promises = data.map(async(i: ChatListType) => {
             const userDocRef = doc(db, "users", i.receiverId);
             const userDocSnap = await getDoc(userDocRef);
     

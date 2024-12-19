@@ -11,6 +11,8 @@ import { doc, getDoc, onSnapshot, updateDoc } from "firebase/firestore"
 import { db } from "../../../lib/firebase"
 import { chageChat, UserState } from "../../../redux/slices/chatSlice"
 import { useAppDispatch } from "../../../redux/store"
+import { addId } from "../../../redux/slices/chatListSlice"
+import { selectCurrentChatSlice } from "../../../redux/slices/currentChatSlice"
 
 export interface ChatUserList {
   chatId: string,
@@ -21,7 +23,7 @@ export interface ChatUserList {
   user: UserState,
 }
 
-export interface ChatList {
+export interface ChatListType {
   chatId: string,
   isSeen: boolean,
   lastMessage: string,
@@ -30,7 +32,7 @@ export interface ChatList {
 }
 
 export interface DocumentData {
-  chats: ChatList[]; 
+  chats: ChatListType[]; 
 }
 
 const ChatList = () => {
@@ -42,6 +44,7 @@ const ChatList = () => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   const { currentUser } =  useSelector(selectUserSlice);
+  const { currentChat } =  useSelector(selectCurrentChatSlice);  
   
   const dispatch = useAppDispatch();
 
@@ -57,7 +60,7 @@ const ChatList = () => {
       const data = chat.chats;
       
       if (data) {
-        const promises = data.map(async(i: ChatList) => {
+        const promises = data.map(async(i: ChatListType) => {
         
           const userDocRef = doc(db, "users", i.receiverId);
           const userDocSnap = await getDoc(userDocRef);
@@ -68,8 +71,12 @@ const ChatList = () => {
         })
           
           const chatData = await Promise.all(promises);
+          chatData.forEach((el) => (
+            dispatch(addId(el.receiverId))
+          ))
           
           setChats(chatData.sort((a, b) => b.updateAt - a.updateAt));
+
       }
       
     });
@@ -104,7 +111,7 @@ const ChatList = () => {
         
     }
     
-  }  
+  };
 
   // useEffect(() => {
   //   if (!chatId) return;
@@ -121,8 +128,12 @@ const ChatList = () => {
   //   };
   // }, [chatId])
 
+  const filteredChats = chats.filter((c) => c.user.username.toLowerCase().includes(inputText.toLowerCase()));
 
-  const filteredChats = chats.filter((c) => c.user.username.toLowerCase().includes(inputText.toLowerCase()))
+  useEffect(() => {
+    setAddMode(false)
+
+  }, [filteredChats.length])
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -142,7 +153,7 @@ const ChatList = () => {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, []);
+  }, []);  
 
   return (
     <div className='chat-list'>
@@ -155,13 +166,18 @@ const ChatList = () => {
       </div>
       {
         filteredChats.map((el) => (
-
-          <div className="item" key={el.chatId} onClick={() => handleSelect(el)} style={{backgroundColor: el.isSeen ? "transparent" : "rgba(227, 255, 255, 0.42)"}}>
-            <img src={avatar} alt="" />
-            <div className="texts">
-              <span>{el.user.username}</span>
-              <p className="lastMess">{el.lastMessage}</p>
-              {/* <p>{chat.length > 0 ? (chat.messages[0].senderId.id === currentUser?.id ? "Вы: " : "") : '' }{lastMes}</p> */}
+          
+          <div className="item" key={el.chatId} onClick={() => handleSelect(el)} style={{backgroundColor: currentChat === el.user.id ? "rgba(0, 207, 207, 0.57)" : "transparent"}}>
+            <div className="user-description">
+              <img src={avatar} alt="" />
+              <div className="texts">
+                <span>{el.user.username}</span>
+                <p className="lastMess">{el.lastMessage}</p>
+                {/* <p>{chat.length > 0 ? (chat.messages[0].senderId.id === currentUser?.id ? "Вы: " : "") : '' }{lastMes}</p> */}
+              </div>
+              <div className="new-message" style={{display: el.isSeen ? "none" : "flex"}}>
+                {el.isSeen ? <></> : (<span>1</span>)}
+              </div>
             </div>
           </div>
         ))
