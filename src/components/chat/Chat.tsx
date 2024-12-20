@@ -57,6 +57,7 @@ const Chat = () => {
 
   const { chatId, user, isCurrentUserBlocked, isReceiverBlocked } = useSelector(selectChatSlice);
   const { currentUser } = useSelector(selectUserSlice);
+
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -71,8 +72,8 @@ const Chat = () => {
       const tmp = res.data() as Chat
       const data = tmp;
       setChat(data);
-      dispatch(addCurrentChat(data.messages[0].senderId.id))
-
+      dispatch(addCurrentChat(user.id))
+        
     });
     
     return () => {

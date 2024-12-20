@@ -11,7 +11,7 @@ import { doc, getDoc, onSnapshot, updateDoc } from "firebase/firestore"
 import { db } from "../../../lib/firebase"
 import { chageChat, UserState } from "../../../redux/slices/chatSlice"
 import { useAppDispatch } from "../../../redux/store"
-import { addId } from "../../../redux/slices/chatListSlice"
+import { addIdChat, addName } from "../../../redux/slices/chatListSlice"
 import { selectCurrentChatSlice } from "../../../redux/slices/currentChatSlice"
 
 export interface ChatUserList {
@@ -31,7 +31,7 @@ export interface ChatListType {
   updateAt: number,
 }
 
-export interface DocumentData {
+export type DocumentData = {
   chats: ChatListType[]; 
 }
 
@@ -71,9 +71,11 @@ const ChatList = () => {
         })
           
           const chatData = await Promise.all(promises);
-          chatData.forEach((el) => (
-            dispatch(addId(el.receiverId))
-          ))
+          chatData.forEach((el) => {
+            dispatch(addIdChat(el.receiverId));
+            dispatch(addName(el.user.username));
+
+          })
           
           setChats(chatData.sort((a, b) => b.updateAt - a.updateAt));
 
@@ -103,8 +105,13 @@ const ChatList = () => {
       await updateDoc(userChatsRef, {
         chats: userChats,
       });
-      
-      dispatch(chageChat({chatId: chat.chatId, user: chat.user, currentUser}));
+      if (currentUser) {
+        dispatch(chageChat({chatId: chat.chatId, user: chat.user, currentUser}));
+      }
+      else {
+        console.log("currentUser is null");
+        
+      }
       
     }catch(error) {
         console.log(error);
@@ -128,13 +135,6 @@ const ChatList = () => {
   //   };
   // }, [chatId])
 
-  const filteredChats = chats.filter((c) => c.user.username.toLowerCase().includes(inputText.toLowerCase()));
-
-  useEffect(() => {
-    setAddMode(false)
-
-  }, [filteredChats.length])
-
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as HTMLElement
@@ -153,7 +153,13 @@ const ChatList = () => {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, []);  
+  }, []); 
+  
+  const filteredChats = chats.filter((c) => c.user.username.toLowerCase().includes(inputText.toLowerCase()));
+
+  useEffect(() => {
+    setAddMode(false);
+  }, [filteredChats.length])
 
   return (
     <div className='chat-list'>

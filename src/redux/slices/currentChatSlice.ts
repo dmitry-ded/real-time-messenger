@@ -15,7 +15,6 @@ const currentChatSlice = createSlice({
   }
 });
 
-
 export const { addCurrentChat } = currentChatSlice.actions;
 
 export const selectCurrentChatSlice = (state: RootState) => state.currentChatSlice;

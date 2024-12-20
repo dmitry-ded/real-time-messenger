@@ -74,7 +74,7 @@
     overflow-x: hidden;
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 1rem;
     scrollbar-width: thin; 
     scrollbar-color: #888 transparent;
 
@@ -289,7 +289,7 @@
 
     .center {
       width: 90vw;
-      padding: .2rem;
+      padding: .5rem;
 
       .message {
         max-width: 70%;

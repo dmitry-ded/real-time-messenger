@@ -1,10 +1,25 @@
-import { createSlice } from "@reduxjs/toolkit"
+import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { RootState } from "../store";
 
+interface ChangeChatPayload {
+  chatId: string,
+  currentUser: {
+    blocked: string[],
+    email: string,
+    id: string,
+    username: string,
+  },
+  user: {
+    blocked: string[],
+    email: string,
+    id: string,
+    username: string,
+  }
+}
 export interface UserState {
   id: string,
   email: string,
-  blocked: [],
+  blocked: string[],
   username: string,
 }
 
@@ -33,7 +48,9 @@ const chatSlice = createSlice({
   name: "chat",
   initialState,
   reducers: {
-    chageChat(state, action) {
+    chageChat(state, action: PayloadAction<ChangeChatPayload>) {
+      console.log(action.payload);
+      
       const { chatId, user, currentUser } = action.payload;
 
       if(user.blocked.includes(currentUser.id)) {

@@ -89,11 +89,16 @@ const PopupChats = () => {
           chats: userChats,
         });
         
-        dispatch(chageChat({chatId: chat.chatId, user: chat.user, currentUser}));
+        if (currentUser) {
+          dispatch(chageChat({chatId: chat.chatId, user: chat.user, currentUser}));
+        }
+        else {
+          console.log("currentUser is null");
+        }
+
         
       }catch(error) {
-          console.log(error);
-          
+        console.log(error);
       }
       
   }
@@ -165,7 +170,7 @@ const PopupChats = () => {
                 filteredChats.map((el) => (
                   <div className="item"  onClick={() => handleSelect(el)} style={{backgroundColor: el.isSeen ? "transparent" : "rgba(227, 255, 255, 0.42)"}} key={el.chatId} >
                     <img src={avatar} alt="" />
-                    <div className="texts">
+                    <div className="texts-popup">
                       <span>{el.user.username}</span>
                       <p className="lastMess">{el.lastMessage}</p>
                       {/* <p>{chat.length > 0 ? (chat.messages[0].senderId.id === currentUser?.id ? "Вы: " : "") : '' }{lastMes}</p> */}

@@ -22,26 +22,21 @@ const AddUser = () => {
   const [disabl, setDisabl] = useState(true);
 
   const { currentUser } = useSelector(selectUserSlice);
-  const { idList } = useSelector(selectChatListSlice);
+  const { idList, usernameList } = useSelector(selectChatListSlice);
  
   const handleSearch = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();  
 
     const formData = new FormData(e.target as HTMLFormElement);
     let username = formData.get("username")
-
-    //сделать чтобы можно было искать в любом регистре
-    // if (typeof username === "string") {
-    //   username = username.toLowerCase(); 
-    // }
+    const lowerUsername = username ? username.toString().toLowerCase() : "";  
 
     try {
       
       const userRef = collection(db, "users");
-
-      const q = query(userRef, where("username", "==", username));
       
-      const querySnapShot = await getDocs(q);
+      const q = query(userRef, where("username", "==", lowerUsername));
+      const querySnapShot = await getDocs(q); 
       
       if (!querySnapShot.empty) {
         const userData = querySnapShot.docs[0].data() as UserState;
@@ -49,7 +44,7 @@ const AddUser = () => {
 
         if(userData.id !== currentUser?.id) {
 
-          const isIdInList = idList.some((el) => el === userData.id);
+          const isIdInList = usernameList.some((el) => el.toLowerCase() === userData.username.toLowerCase());
           if (!isIdInList) {
             setIsAdded(false); 
             setDisabl(false);
@@ -68,7 +63,7 @@ const AddUser = () => {
 
     }catch(err) {
       console.log(err);
-      
+      setNotFound(true);
     }
   }
 
@@ -77,14 +72,12 @@ const AddUser = () => {
     const chatRef = collection(db, "chats")
     const userChatsRef = collection(db, "userchats")
 
-
     try{
       const newChatRef = doc(chatRef);
 
       await setDoc(newChatRef, {
         createdAt: serverTimestamp(),
         messages: [],
-
       })
 
       await updateDoc(doc(userChatsRef, user.id), {
@@ -95,6 +88,7 @@ const AddUser = () => {
           updateAt: Date.now(),
         })
       })
+
       await updateDoc(doc(userChatsRef, currentUser?.id), {
         chats: arrayUnion({
           chatId: newChatRef.id,
