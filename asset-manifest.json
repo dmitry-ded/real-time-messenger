@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/real-time-messenger/static/css/main.b64d3696.css",
+    "main.js": "/real-time-messenger/static/js/main.9020f3f5.js",
+    "static/media/bc2.jpg": "/real-time-messenger/static/media/bc2.3b77d569feacc4b63bdd.jpg",
+    "static/media/avatar.jpg": "/real-time-messenger/static/media/avatar.f00a59e7437746ee3074.jpg",
+    "index.html": "/real-time-messenger/index.html",
+    "main.b64d3696.css.map": "/real-time-messenger/static/css/main.b64d3696.css.map",
+    "main.9020f3f5.js.map": "/real-time-messenger/static/js/main.9020f3f5.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.b64d3696.css",
+    "static/js/main.9020f3f5.js"
+  ]
+}
